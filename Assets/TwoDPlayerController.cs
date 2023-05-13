@@ -14,7 +14,7 @@ public class TwoDPlayerController : MonoBehaviour
 
     float Speed = 6;
     float CurrentDePosition;
-    readonly private float JumpForce = 300f;
+    readonly private float JumpForce = 500f;
 
     Rigidbody2D rb;
     BoxCollider2D BoxColl;
@@ -44,7 +44,6 @@ public class TwoDPlayerController : MonoBehaviour
     Image DashUI;
     Text DashText;
     Transform canvas;
-
 
     // Start is called before the first frame update
     void Start()
@@ -190,15 +189,16 @@ public class TwoDPlayerController : MonoBehaviour
                 CanMove = true;
                 isDashing = false;
                 dashStopWatch = 0;
+                rb.gravityScale = 3;
             }
         }
         else//is wallJumping
         {
-            transform.position += new Vector3(CurrentDePosition * wallJumpDirection * 1.4f, CurrentDePosition * 1.2f, 0);
+            transform.position += new Vector3(CurrentDePosition * wallJumpDirection * 1.1f, CurrentDePosition * 0.9f, 0);
             wallJumpStopWatch += Time.deltaTime;
             if(wallJumpStopWatch >= wallJumpDuration)
             {
-                rb.gravityScale = 1;
+                rb.gravityScale = 3;
                 wallJumpStopWatch = 0;
                 CanMove = true;
             }
