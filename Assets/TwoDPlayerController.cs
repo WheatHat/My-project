@@ -32,7 +32,7 @@ public class TwoDPlayerController : MonoBehaviour
     int wallJumpDirection = 1;
     bool CanMove = true;
     float wallJumpStopWatch = 0;
-    float wallJumpDuration = 0.45f;
+    float wallJumpDuration = 0.3f;
 
     bool canDash = true;
     bool isDashing = false;
@@ -194,7 +194,7 @@ public class TwoDPlayerController : MonoBehaviour
         }
         else//is wallJumping
         {
-            transform.position += new Vector3(CurrentDePosition * wallJumpDirection, CurrentDePosition, 0);
+            transform.position += new Vector3(CurrentDePosition * wallJumpDirection * 1.4f, CurrentDePosition * 1.2f, 0);
             wallJumpStopWatch += Time.deltaTime;
             if(wallJumpStopWatch >= wallJumpDuration)
             {
