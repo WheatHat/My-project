@@ -38,7 +38,7 @@ public class TwoDPlayerController : MonoBehaviour
     bool isDashing = false;
     Vector2 dashDirection = Vector2.zero;
     float dashStopWatch = 0;
-    float dashDuration = 0.06f;
+    float dashDuration = 0.18f;
     float dashCoolDown = 2;
 
     Image DashUI;
@@ -83,6 +83,7 @@ public class TwoDPlayerController : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.X) && canDash)
         {
+            rb.gravityScale = 0;
             isDashing = true;
             CanMove = false;
             canDash = false;
@@ -181,7 +182,14 @@ public class TwoDPlayerController : MonoBehaviour
         }
         else if(isDashing)
         {
-            transform.position += ((Vector3)dashDirection) * Time.deltaTime * 100;
+            if(dashDirection.x != 0 && dashDirection.y != 0)
+            {
+                transform.position += ((Vector3)dashDirection) * Time.deltaTime * 35;
+            }
+            else
+            {
+                transform.position += ((Vector3)dashDirection) * Time.deltaTime * 50;
+            }
 
             dashStopWatch += Time.deltaTime;
             if(dashStopWatch >= dashDuration)
