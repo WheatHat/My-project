@@ -49,9 +49,10 @@ public class TwoDPlayerController : MonoBehaviour
         BoxColl = GetComponent<BoxCollider2D>();
 
         SizeOfObjVert = BoxColl.bounds.extents.y;
+        SizeOfObjHori = BoxColl.bounds.extents.x;
 
         distanceToTheGround = SizeOfObjVert + 0.02f;
-        distanceToSides = 1.1f;
+        distanceToSides = SizeOfObjHori;
     }
 
     // Update is called once per frame
