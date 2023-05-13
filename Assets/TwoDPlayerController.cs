@@ -12,6 +12,15 @@ public class TwoDPlayerController : MonoBehaviour
         Left
     }
 
+    enum Skills
+    {
+        DoubleJump,
+        Dash,
+        moving
+    }
+
+    Skills CurrentSkill = Skills.moving;
+
     float Speed = 6;
     float CurrentDePosition;
     readonly private float JumpForce = 500f;
@@ -45,6 +54,8 @@ public class TwoDPlayerController : MonoBehaviour
     Text DashText;
     Transform canvas;
 
+    Texture2D[] text2d = new Texture2D[3];
+
     // Start is called before the first frame update
     void Start()
     {
@@ -62,26 +73,56 @@ public class TwoDPlayerController : MonoBehaviour
 
         distanceToTheGround = SizeOfObjVert + 0.02f;
         distanceToSides = SizeOfObjHori;
+
+        DashText.text = "";
+        DashUI.fillAmount = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Z))
+        {
+            PrevSkill();
+            text2d
+        }
+        else if(Input.GetKeyDown(KeyCode.X))
+        {
+            NextSkill();
+        }
 
         CurrentDePosition = Speed * Time.deltaTime;
 
         #region Taking inputs for basic movement
 
-        Right = Input.GetKey(KeyCode.D) ||
-            Input.GetKey(KeyCode.RightArrow);
+        if(CurrentSkill == Skills.moving)
+        {
+            Right = Input.GetKey(KeyCode.D) ||
+                Input.GetKey(KeyCode.RightArrow);
 
-        Left = Input.GetKey(KeyCode.A) ||
-            Input.GetKey(KeyCode.LeftArrow);
+            Left = Input.GetKey(KeyCode.A) ||
+                Input.GetKey(KeyCode.LeftArrow);
+        }
 
-        Up = Input.GetKeyDown(KeyCode.W) ||
-            Input.GetKeyDown(KeyCode.UpArrow);
+        Up = Input.GetKeyDown(KeyCode.W);
 
-        if(Input.GetKeyDown(KeyCode.X) && canDash)
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            if(CurrentSkill == Skills.moving)
+            {
+
+            }
+            else if(CurrentSkill == Skills.Dash)
+            {
+
+            }
+            else if(CurrentSkill == Skills.DoubleJump)
+            {
+
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.X) && canDash)
         {
             rb.gravityScale = 0;
             isDashing = true;
@@ -265,6 +306,34 @@ public class TwoDPlayerController : MonoBehaviour
         }
     }
 
+    void UpdateSkillUI()
+    {
+    }
+
+    void NextSkill()
+    {
+        if((int)CurrentSkill + 1 > 2)
+        {
+            CurrentSkill = 0;
+        }
+        else
+        {
+            CurrentSkill++;
+        }
+    }
+    void PrevSkill() 
+    {
+
+        if ((int)CurrentSkill - 1 < 0)
+        {
+            CurrentSkill = (Skills)2;
+        }
+        else
+        {
+            CurrentSkill--;
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (OnTheGround())
@@ -299,6 +368,18 @@ public class TwoDPlayerController : MonoBehaviour
 
         HasDoubleJumped = true;
         HasJumped = true;
+    }
+
+    private void OnDisable()
+    {
+        DashText.text = "";
+        DashUI.fillAmount = 1;
+    }
+
+    private void OnEnable()
+    {
+        DashText.text = "";
+        DashUI.fillAmount = 0;
     }
 
     void ResetJump()
