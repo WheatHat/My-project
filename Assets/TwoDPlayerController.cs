@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TwoDPlayerController : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class TwoDPlayerController : MonoBehaviour
         Left
     }
 
-    float Speed = 5;
+    float Speed = 6;
     float CurrentDePosition;
     readonly private float JumpForce = 300f;
 
@@ -40,9 +41,18 @@ public class TwoDPlayerController : MonoBehaviour
     float dashDuration = 0.06f;
     float dashCoolDown = 2;
 
+    Image DashUI;
+    Text DashText;
+    Transform canvas;
+
+
     // Start is called before the first frame update
     void Start()
     {
+        canvas = GameObject.Find("Canvas").transform;
+        DashUI = canvas.Find("DashUI").Find("Image").GetComponent<Image>();
+        DashText = canvas.Find("DashUI").Find("Image").Find("Text").GetComponent<Text>();
+
         ResetJump();
 
         rb = GetComponent<Rigidbody2D>();
@@ -86,9 +96,18 @@ public class TwoDPlayerController : MonoBehaviour
             {
                 dashDirection = new Vector2(1, 0);
             }
+            else
+            {
+                dashDirection = new Vector2(0, 0);
+            }
+
             if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
             {
-                dashDirection += new Vector2(0, 1);
+                dashDirection = new Vector2(dashDirection.x, 1);
+            }
+            else
+            {
+                dashDirection = new Vector2(dashDirection.x, 0);
             }
         }
         #endregion
@@ -188,11 +207,29 @@ public class TwoDPlayerController : MonoBehaviour
         if (!canDash)
         {
             dashStopWatch += Time.deltaTime;
+
+            float remainingTime = (dashCoolDown - dashStopWatch);
+            float percentage = remainingTime / dashCoolDown;
+
+            if(remainingTime < 1)
+            {
+                DashText.text = (remainingTime * 100).ToString("f0") + "<size=30>ms</size>";
+            }
+            else
+            {
+                DashText.text = remainingTime.ToString("f1");
+            }
+
             if (dashStopWatch > dashCoolDown)
             {
+                percentage = 0;
+                DashText.text = "";
+
                 dashStopWatch = 0;
                 canDash = true;
             }
+
+            DashUI.fillAmount = percentage;
         }
         #endregion
 
@@ -226,6 +263,11 @@ public class TwoDPlayerController : MonoBehaviour
         {
             ResetJump();
         }
+    }
+
+    private void Flip()
+    {
+        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y * -1, transform.localScale.z);
     }
 
     void Jump()
